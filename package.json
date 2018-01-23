@@ -1,0 +1,23 @@
+{
+  "author": {
+    "name": "Zach Gulde",
+    "email": "zachgulde@gmail.com",
+    "url": "https://zgul.de"
+  },
+  "bin": {
+    "generate-team-diagram": "./app"
+  },
+  "dependencies": {
+    "js-yaml": "^3.10.0",
+    "yargs": "^8.0.2"
+  },
+  "description": "generate graphviz diagrams based off of a json file",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "team-diagram-generator",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.3.1"
+}
