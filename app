@@ -113,9 +113,16 @@ const readYaml = (filename) => {
 
 const codifyName = name => name.toLowerCase().replace(/\s/g, '_');
 
-const students = filename.endsWith('json')
-  ? readJson(filename)
-  : readYaml(filename);
+let students = filename.endsWith('json') ?
+  readJson(filename) :
+  readYaml(filename);
+
+// if each entry doesn't specify preferences or unpreferences, we'll set them to
+// an empty array
+students = students.map(student => Object.assign({
+  [preferencesKey]: [],
+  [unpreferencesKey]: [],
+}, student));
 
 if (! validateJson(students)) {
   console.log('Invalid json format. See the help (--help) for more information');
