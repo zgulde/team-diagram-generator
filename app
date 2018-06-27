@@ -86,19 +86,27 @@ const {
 const unpreferenceFormat = '[fillcolor = red, color = red]';
 
 const validateJson = (students) => {
-  return Array.isArray(students)
-    && students.every((student) => {
-      const preferencesAreValid = Array.isArray(student[preferencesKey])
-        && student[preferencesKey].every(name => typeof name === 'string');
-
-      const unpreferencesAreValid = typeof student[unpreferencesKey] !== 'undefined'
-        ? (Array.isArray(student[unpreferencesKey])
-           && student[unpreferencesKey].every(name => typeof name === 'string'))
-        : true;
-
-      return typeof student[nameKey] === 'string'
-        && preferencesAreValid && unpreferencesAreValid;
-    });
+  if (! Array.isArray(students)) {
+    return { valid: false, message: 'Excpected it to be an array' }
+  }
+  if (! students.every(s => typeof s.name === 'string')) {
+    return { valid: false, message: 'Expected every student to have a name property that is a string' }
+  }
+  for (let student of students) {
+    if (! Array.isArray(student[preferencesKey])) {
+      return { valid: false, message: `[${student.name}] - Expected student[${preferencesKey}] to be an array` }
+    }
+    if (! Array.isArray(student[unpreferencesKey])) {
+      return { valid: false, message: `[${student.name}] - Expected student[${unpreferencesKey}] to be an array` }
+    }
+    if (! student[unpreferencesKey].every(n => typeof n === 'string')) {
+      return { valid: false, message: `[${student.name}] - Expected student[${unpreferencesKey}] to be an array of strings` }
+    }
+    if (! student[preferencesKey].every(n => typeof n === 'string')) {
+      return { valid: false, message: `[${student.name}] - Expected student[${preferencesKey}] to be an array of strings` }
+    }
+  }
+  return { valid: true, message: '' }
 }
 
 const readJson = (filename) => {
@@ -124,8 +132,12 @@ students = students.map(student => Object.assign({
   [unpreferencesKey]: [],
 }, student));
 
-if (! validateJson(students)) {
-  console.log('Invalid json format. See the help (--help) for more information');
+let validation = validateJson(students);
+
+if (! validation.valid) {
+  console.log('Invalid json format. Error:');
+  console.log(validation.message);
+  console.log()
   process.exit(1);
 }
 
